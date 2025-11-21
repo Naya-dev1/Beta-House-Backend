@@ -110,6 +110,8 @@ const getAllProperties = async (req, res) => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const totalProperties = await Property.countDocuments(query);
+    const totalPages = Math.ceil(totalProperties / limit);
 
     const properties = await Property.find(query)
       .sort(sort)
@@ -120,6 +122,7 @@ const getAllProperties = async (req, res) => {
       status: "success",
       results: properties.length,
       page,
+      totalPages,
       data: properties,
     });
   } catch (err) {
